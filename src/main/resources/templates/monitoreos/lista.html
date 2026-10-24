@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/plantilla :: cabeza('Monitoreos')}"></head>
+<body>
+<header th:replace="~{fragmentos/plantilla :: barra}"></header>
+<main class="contenedor">
+    <div th:replace="~{fragmentos/plantilla :: mensajes}"></div>
+
+    <section class="titulo-seccion">
+        <div>
+            <h1>Monitoreos ambientales</h1>
+            <p class="sutil">Consulte las mediciones y filtre por proyecto, parámetro o cumplimiento.</p>
+        </div>
+        <a class="boton" th:href="@{/monitoreos/nuevo(proyectoId=${proyectoId})}">+ Registrar monitoreo</a>
+    </section>
+
+    <form class="filtros" method="get" th:action="@{/monitoreos}">
+        <select name="proyectoId" aria-label="Proyecto">
+            <option value="">Todos los proyectos</option>
+            <option th:each="p : ${proyectos}" th:value="${p.id}" th:text="${p.nombre}"
+                    th:selected="${p.id == proyectoId}"></option>
+        </select>
+        <input type="text" name="buscar" maxlength="60" placeholder="Parámetro (ej. pH, DBO5)" th:value="${buscar}" aria-label="Parámetro">
+        <select name="norma" aria-label="Cumplimiento">
+            <option value="todos" th:selected="${norma == 'todos'}">Cualquier resultado</option>
+            <option value="cumple" th:selected="${norma == 'cumple'}">Cumple</option>
+            <option value="incumple" th:selected="${norma == 'incumple'}">No cumple</option>
+            <option value="sin_referencia" th:selected="${norma == 'sin_referencia'}">Sin referencia</option>
+        </select>
+        <button type="submit" class="boton secundario">Filtrar</button>
+        <a class="enlace" th:href="@{/monitoreos}">Limpiar</a>
+    </form>
+
+    <div class="vacio" th:if="${#lists.isEmpty(monitoreos)}">No hay monitoreos con esos filtros.</div>
+
+    <th:block th:unless="${#lists.isEmpty(monitoreos)}">
+        <p class="sutil" th:text="${#lists.size(monitoreos)} + ' monitoreo(s) encontrado(s)'"></p>
+        <div class="tabla-envoltura">
+        <table>
+            <thead><tr><th>Fecha</th><th>Proyecto</th><th>Parámetro</th><th class="num">Valor</th><th class="num">Límite</th><th>Punto</th><th>Norma</th><th>Acciones</th></tr></thead>
+            <tbody>
+            <tr th:each="m : ${monitoreos}">
+                <td class="fecha" th:text="${m.fechaMuestreo}"></td>
+                <td th:text="${m.proyecto.nombre}"></td>
+                <td th:text="${m.parametro}"></td>
+                <td class="num" th:text="${#numbers.formatDecimal(m.valor, 1, 'POINT', 2, 'COMMA')} + ' ' + ${m.unidad}"></td>
+                <td class="num" th:text="${m.limitePermisible == null} ? '—' : ((${m.tipoLimite.name() == 'MINIMO'} ? 'mín. ' : 'máx. ') + ${#numbers.formatDecimal(m.limitePermisible, 1, 'POINT', 2, 'COMMA')})"></td>
+                <td th:text="${m.puntoMuestreo} ?: '—'"></td>
+                <td><span th:replace="~{fragmentos/plantilla :: norma(${m})}"></span></td>
+                <td class="acciones">
+                    <a th:href="@{/monitoreos/{id}(id=${m.id})}">Ver</a>
+                    <a th:href="@{/monitoreos/{id}/editar(id=${m.id})}">Editar</a>
+                    <a class="peligro" th:href="@{/monitoreos/{id}/eliminar(id=${m.id})}">Eliminar</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </th:block>
+</main>
+<footer th:replace="~{fragmentos/plantilla :: pie}"></footer>
+</body>
+</html>

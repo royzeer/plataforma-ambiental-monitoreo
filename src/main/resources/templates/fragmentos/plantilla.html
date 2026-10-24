@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<!-- Fragmentos comunes (encabezado, mensajes y pie) que reutilizan todas las vistas -->
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="cabeza(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo} + ' | Monitoreo Ambiental'">Monitoreo Ambiental</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+
+<header class="barra" th:fragment="barra">
+    <a class="marca" th:href="@{/monitoreos/resumen}"><span>&#127807;</span> Plataforma Ambiental · Monitoreo</a>
+    <nav>
+        <a th:href="@{/monitoreos/resumen}">Resumen</a>
+        <a th:href="@{/monitoreos}">Monitoreos</a>
+        <a th:href="@{/monitoreos/nuevo}">Registrar</a>
+    </nav>
+</header>
+
+<div th:fragment="mensajes">
+    <div class="alerta exito" role="status" th:if="${mensajeExito}" th:text="${mensajeExito}"></div>
+    <div class="alerta error" role="alert" th:if="${mensajeError}" th:text="${mensajeError}"></div>
+</div>
+
+<span th:fragment="norma(m)"
+      th:class="${m.cumpleNorma == null ? 'norma sin-ref' : (m.cumpleNorma ? 'norma cumple' : 'norma no-cumple')}"
+      th:text="${m.estadoNorma}">Cumple</span>
+
+<footer class="pie" th:fragment="pie">
+    Plataforma Digital Integral para la Gestión de Proyectos de Impacto Ambiental · SENA ADSO 228118 ·
+    Roycer Cervantes y Sebastián Rodríguez
+</footer>
+</body>
+</html>

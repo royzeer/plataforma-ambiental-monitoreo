@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/plantilla :: cabeza(${idEdicion == null} ? 'Registrar monitoreo' : 'Editar monitoreo')}"></head>
+<body>
+<header th:replace="~{fragmentos/plantilla :: barra}"></header>
+<main class="contenedor">
+    <div th:replace="~{fragmentos/plantilla :: mensajes}"></div>
+
+    <section class="titulo-seccion">
+        <div>
+            <h1 th:text="${idEdicion == null} ? 'Registrar monitoreo' : 'Editar monitoreo #' + ${idEdicion}">Registrar monitoreo</h1>
+            <p class="sutil">Los campos con * son obligatorios. El sistema calcula solo si la medición cumple la norma.</p>
+        </div>
+    </section>
+
+    <!-- th:object enlaza el formulario con el DTO; th:field pone name, id y valor de cada input -->
+    <form class="tarjeta formulario" method="post" novalidate th:object="${formulario}"
+          th:action="${idEdicion == null} ? @{/monitoreos} : @{/monitoreos/{id}(id=${idEdicion})}">
+
+        <div class="campo ancho" th:classappend="${#fields.hasErrors('proyectoId')} ? 'con-error'">
+            <label for="proyectoId">Proyecto *</label>
+            <select th:field="*{proyectoId}" required>
+                <option value="">Seleccione el proyecto...</option>
+                <option th:each="p : ${proyectos}" th:value="${p.id}" th:text="${p.etiqueta}"></option>
+            </select>
+            <small class="msg-error" th:errors="*{proyectoId}"></small>
+        </div>
+
+        <div class="campo" th:classappend="${#fields.hasErrors('parametro')} ? 'con-error'">
+            <label for="parametro">Parámetro *</label>
+            <input type="text" th:field="*{parametro}" maxlength="80" placeholder="Ej: Oxígeno disuelto, pH, DBO5">
+            <small class="msg-error" th:errors="*{parametro}"></small>
+        </div>
+
+        <div class="campo" th:classappend="${#fields.hasErrors('fechaMuestreo')} ? 'con-error'">
+            <label for="fechaMuestreo">Fecha de muestreo *</label>
+            <input type="date" th:field="*{fechaMuestreo}">
+            <small class="msg-error" th:errors="*{fechaMuestreo}"></small>
+        </div>
+
+        <div class="campo" th:classappend="${#fields.hasErrors('valor')} ? 'con-error'">
+            <label for="valor">Valor medido *</label>
+            <input type="text" inputmode="decimal" th:field="*{valor}" placeholder="Ej: 6.8">
+            <span class="ayuda">Use punto para decimales. Máximo 4 decimales.</span>
+            <small class="msg-error" th:errors="*{valor}"></small>
+        </div>
+
+        <div class="campo" th:classappend="${#fields.hasErrors('unidad')} ? 'con-error'">
+            <label for="unidad">Unidad *</label>
+            <input type="text" th:field="*{unidad}" maxlength="30" placeholder="Ej: mg/L" list="unidades-comunes">
+            <datalist id="unidades-comunes">
+                <option value="mg/L"></option><option value="unidades"></option><option value="µg/m³"></option>
+                <option value="NMP/100 mL"></option><option value="°C"></option><option value="%"></option>
+            </datalist>
+            <small class="msg-error" th:errors="*{unidad}"></small>
+        </div>
+
+        <div class="campo" th:classappend="${#fields.hasErrors('limitePermisible')} ? 'con-error'">
+            <label for="limitePermisible">Límite permisible</label>
+            <input type="text" inputmode="decimal" th:field="*{limitePermisible}" placeholder="Ej: 4">
+            <span class="ayuda">Déjelo vacío si no hay norma de referencia.</span>
+            <small class="msg-error" th:errors="*{limitePermisible}"></small>
+        </div>
+
+        <div class="campo" th:classappend="${#fields.hasErrors('tipoLimite')} ? 'con-error'">
+            <label for="tipoLimite">Tipo de límite *</label>
+            <select th:field="*{tipoLimite}">
+                <option th:each="t : ${tiposLimite}" th:value="${t}" th:text="${t.descripcion}"></option>
+            </select>
+            <span class="ayuda">Mínimo: el valor no puede quedar por debajo (ej. oxígeno disuelto).</span>
+            <small class="msg-error" th:errors="*{tipoLimite}"></small>
+        </div>
+
+        <div class="campo ancho" th:classappend="${#fields.hasErrors('puntoMuestreo')} ? 'con-error'">
+            <label for="puntoMuestreo">Punto de muestreo</label>
+            <input type="text" th:field="*{puntoMuestreo}" maxlength="120" placeholder="Ej: Río Manzanares - puente de la Avenida del Río">
+            <small class="msg-error" th:errors="*{puntoMuestreo}"></small>
+        </div>
+
+        <div class="campo ancho" th:classappend="${#fields.hasErrors('observaciones')} ? 'con-error'">
+            <label for="observaciones">Observaciones</label>
+            <textarea th:field="*{observaciones}" rows="3" maxlength="500"></textarea>
+            <small class="msg-error" th:errors="*{observaciones}"></small>
+        </div>
+
+        <div class="botones ancho">
+            <button type="submit" class="boton" th:text="${idEdicion == null} ? 'Registrar monitoreo' : 'Guardar cambios'">Guardar</button>
+            <a class="boton secundario" th:href="@{/monitoreos}">Cancelar</a>
+        </div>
+    </form>
+</main>
+<footer th:replace="~{fragmentos/plantilla :: pie}"></footer>
+</body>
+</html>

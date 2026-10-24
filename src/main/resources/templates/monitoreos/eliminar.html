@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/plantilla :: cabeza('Eliminar monitoreo')}"></head>
+<body>
+<header th:replace="~{fragmentos/plantilla :: barra}"></header>
+<main class="contenedor">
+    <div class="tarjeta confirmar">
+        <h1>¿Eliminar este monitoreo?</h1>
+        <p>Va a eliminar la medición de <strong th:text="${monitoreo.parametro}"></strong>
+            del <span th:text="${monitoreo.fechaMuestreo}"></span>
+            (proyecto <span th:text="${monitoreo.proyecto.nombre}"></span>).</p>
+        <p class="sutil">Esta acción no se puede deshacer.</p>
+        <form method="post" th:action="@{/monitoreos/{id}/eliminar(id=${monitoreo.id})}">
+            <div class="botones">
+                <button type="submit" class="boton peligro-btn">Sí, eliminar</button>
+                <a class="boton secundario" th:href="@{/monitoreos/{id}(id=${monitoreo.id})}">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</main>
+<footer th:replace="~{fragmentos/plantilla :: pie}"></footer>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/plantilla :: cabeza('Detalle del monitoreo')}"></head>
+<body>
+<header th:replace="~{fragmentos/plantilla :: barra}"></header>
+<main class="contenedor">
+    <div th:replace="~{fragmentos/plantilla :: mensajes}"></div>
+
+    <section class="titulo-seccion">
+        <div>
+            <p class="mono sutil" th:text="'Monitoreo #' + ${monitoreo.id} + ' · ' + ${monitoreo.proyecto.codigo}"></p>
+            <h1 th:text="${monitoreo.parametro}">Parámetro</h1>
+        </div>
+        <span th:replace="~{fragmentos/plantilla :: norma(${monitoreo})}"></span>
+    </section>
+
+    <div class="tarjeta">
+        <dl class="datos">
+            <dt>Proyecto</dt><dd th:text="${monitoreo.proyecto.nombre}"></dd>
+            <dt>Valor medido</dt><dd th:text="${#numbers.formatDecimal(monitoreo.valor, 1, 'POINT', 4, 'COMMA')} + ' ' + ${monitoreo.unidad}"></dd>
+            <dt>Límite permisible</dt>
+            <dd th:text="${monitoreo.limitePermisible == null} ? 'Sin límite de referencia' : ${monitoreo.tipoLimite.descripcion} + ': ' + ${#numbers.formatDecimal(monitoreo.limitePermisible, 1, 'POINT', 4, 'COMMA')} + ' ' + ${monitoreo.unidad}"></dd>
+            <dt>Fecha de muestreo</dt><dd th:text="${monitoreo.fechaMuestreo}"></dd>
+            <dt>Punto de muestreo</dt><dd th:text="${monitoreo.puntoMuestreo} ?: 'No registrado'"></dd>
+            <dt>Observaciones</dt><dd th:text="${monitoreo.observaciones} ?: 'Sin observaciones'"></dd>
+        </dl>
+        <div class="botones">
+            <a class="boton" th:href="@{/monitoreos/{id}/editar(id=${monitoreo.id})}">Editar</a>
+            <a class="boton peligro-btn" th:href="@{/monitoreos/{id}/eliminar(id=${monitoreo.id})}">Eliminar</a>
+            <a class="boton secundario" th:href="@{/monitoreos(proyectoId=${monitoreo.proyecto.id})}">Volver</a>
+        </div>
+    </div>
+</main>
+<footer th:replace="~{fragmentos/plantilla :: pie}"></footer>
+</body>
+</html>

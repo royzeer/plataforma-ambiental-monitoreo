@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/plantilla :: cabeza('Resumen')}"></head>
+<body>
+<header th:replace="~{fragmentos/plantilla :: barra}"></header>
+<main class="contenedor">
+    <div th:replace="~{fragmentos/plantilla :: mensajes}"></div>
+
+    <section class="titulo-seccion">
+        <div>
+            <h1>Resumen de cumplimiento ambiental</h1>
+            <p class="sutil">Mediciones de calidad de agua, aire y suelo frente a sus límites permisibles.</p>
+        </div>
+        <a class="boton" th:href="@{/monitoreos/nuevo}">+ Registrar monitoreo</a>
+    </section>
+
+    <div class="indicadores">
+        <div class="indicador"><span class="cifra" th:text="${total}">0</span><span class="rotulo">Monitoreos registrados</span></div>
+        <div class="indicador"><span class="cifra" th:text="${cumplen}">0</span><span class="rotulo">Dentro de la norma</span></div>
+        <div class="indicador alerta-num"><span class="cifra" th:text="${incumplen}">0</span><span class="rotulo">Fuera de la norma</span></div>
+        <div class="indicador"><span class="cifra" th:text="${porcentaje} + '%'">0%</span><span class="rotulo">Cumplimiento global</span></div>
+    </div>
+
+    <h2>Por proyecto</h2>
+    <div class="tabla-envoltura">
+    <table>
+        <thead><tr><th>Proyecto</th><th class="num">Total</th><th class="num">Cumplen</th><th class="num">No cumplen</th><th class="num">Sin ref.</th><th>Cumplimiento</th><th></th></tr></thead>
+        <tbody>
+        <tr th:each="r : ${resumen}">
+            <td><span class="mono sutil" th:text="${r.codigo}"></span><br><span th:text="${r.nombre}"></span></td>
+            <td class="num" th:text="${r.total}"></td>
+            <td class="num" th:text="${r.cumplen}"></td>
+            <td class="num" th:text="${r.incumplen}"></td>
+            <td class="num" th:text="${r.sinReferencia}"></td>
+            <td>
+                <div class="barra-progreso"><span th:style="'width:' + ${r.porcentajeCumplimiento()} + '%'"></span></div>
+                <small th:text="${r.porcentajeCumplimiento()} + '%'"></small>
+            </td>
+            <td><a class="enlace" th:href="@{/monitoreos(proyectoId=${r.proyectoId})}">Ver monitoreos</a></td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+
+    <h2>Alertas: mediciones fuera de la norma</h2>
+    <div class="vacio" th:if="${#lists.isEmpty(alertas)}">No hay mediciones fuera de la norma. ¡Bien!</div>
+    <div class="tabla-envoltura" th:unless="${#lists.isEmpty(alertas)}">
+    <table>
+        <thead><tr><th>Fecha</th><th>Proyecto</th><th>Parámetro</th><th class="num">Valor</th><th class="num">Límite</th><th></th></tr></thead>
+        <tbody>
+        <tr th:each="m : ${alertas}">
+            <td class="fecha" th:text="${m.fechaMuestreo}"></td>
+            <td th:text="${m.proyecto.nombre}"></td>
+            <td th:text="${m.parametro}"></td>
+            <td class="num" th:text="${#numbers.formatDecimal(m.valor, 1, 'POINT', 2, 'COMMA')} + ' ' + ${m.unidad}"></td>
+            <td class="num" th:text="(${m.tipoLimite.name() == 'MINIMO'} ? 'mín. ' : 'máx. ') + ${#numbers.formatDecimal(m.limitePermisible, 1, 'POINT', 2, 'COMMA')}"></td>
+            <td><a class="enlace" th:href="@{/monitoreos/{id}(id=${m.id})}">Ver</a></td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</main>
+<footer th:replace="~{fragmentos/plantilla :: pie}"></footer>
+</body>
+</html>
