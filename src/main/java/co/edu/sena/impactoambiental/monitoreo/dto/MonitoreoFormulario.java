@@ -30,14 +30,20 @@ public class MonitoreoFormulario {
     /** Letras con tildes, números, espacios y . , ( ) / % - (ej. "PM2.5", "DBO5", "Oxígeno disuelto"). */
     public static final String PATRON_TEXTO = "^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9 .,()/%\\-]*$";
 
+    /*
+     * Nota: los patrones aceptan la cadena vacía a propósito. Si el campo llega vacío,
+     * solo se muestra el mensaje de @NotBlank y no tres mensajes repetidos.
+     */
+
     /** Unidades: mg/L, µg/m³, NMP/100 mL, °C, unidades de pH, %. */
-    public static final String PATRON_UNIDAD = "^[A-Za-z0-9µ/%°³² .]+$";
+    public static final String PATRON_UNIDAD = "^[A-Za-z0-9µ/%°³² .]*$";
 
     @NotNull(message = "Seleccione el proyecto.")
     private Integer proyectoId;
 
     @NotBlank(message = "El parámetro es obligatorio.")
-    @Size(min = 2, max = 80, message = "El parámetro debe tener entre 2 y 80 caracteres.")
+    @Size(max = 80, message = "El parámetro no puede pasar de 80 caracteres.")
+    @Pattern(regexp = "^(|.{2,})$", message = "El parámetro debe tener al menos 2 caracteres.")
     @Pattern(regexp = PATRON_TEXTO, message = "El parámetro tiene caracteres no permitidos.")
     private String parametro;
 
