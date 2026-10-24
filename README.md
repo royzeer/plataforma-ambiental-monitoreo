@@ -1,5 +1,16 @@
 # Módulo de Monitoreo Ambiental – Spring Boot
 
+[![Build](https://github.com/royzeer/plataforma-ambiental-monitoreo/actions/workflows/build.yml/badge.svg)](https://github.com/royzeer/plataforma-ambiental-monitoreo/actions/workflows/build.yml)
+![Java 17](https://img.shields.io/badge/Java_17-ED8B00?logo=openjdk&logoColor=white)
+![Spring Boot 3](https://img.shields.io/badge/Spring_Boot_3-6DB33F?logo=springboot&logoColor=white)
+![Thymeleaf](https://img.shields.io/badge/Thymeleaf-005F0F?logo=thymeleaf&logoColor=white)
+![MySQL 8](https://img.shields.io/badge/MySQL_8-4479A1?logo=mysql&logoColor=white)
+![JUnit 5](https://img.shields.io/badge/JUnit_5-25A162?logo=junit5&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-C71A36?logo=apachemaven&logoColor=white)
+![licencia MIT](https://img.shields.io/badge/licencia_MIT-blue?logo=opensourceinitiative&logoColor=white)
+
+> *English summary at the [end of this file](#english-summary).*
+
 **Plataforma Digital Integral para la Gestión de Proyectos de Impacto Ambiental**
 
 | | |
@@ -73,4 +84,18 @@ Pruebas unitarias: `mvn test` → 9 pruebas, 0 fallas.
 
 ## Repositorio
 
-Ver `ENLACE_REPOSITORIO.txt`.
+https://github.com/royzeer/plataforma-ambiental-monitoreo
+
+---
+
+## English summary
+
+Web module (Spring Boot MVC) to **record environmental monitoring data** (pH, dissolved oxygen, BOD5, coliforms, PM10…) and automatically check each measurement against its **regulatory limit**, so non-compliance is detected on time.
+
+**Features:** full CRUD with server-side validation, filters by project, parameter and result, delete confirmation, and a per-project compliance summary with alerts.
+
+**Tech stack:** Java 17 · Spring Boot 3.3 (Web MVC, Data JPA, Validation) · Thymeleaf · MySQL 8 · JUnit 5 · Maven · GitHub Actions.
+
+**Architecture:** layered MVC (controllers → services → Spring Data JPA repositories), DTOs for forms and a centralized error handler. It shares the same database as the project's REST API and React frontend.
+
+**Run it:** create the database with `database/schema.sql` and `database/datos_prueba.sql`, set your MySQL credentials in `application.properties`, then `mvn spring-boot:run` and open http://localhost:8081. Tests: `mvn test`.
